@@ -19,7 +19,7 @@ var yScale = d3.scale.linear()
 
 //Scale for colors
 var color = d3.scale.ordinal()
-				.range(["#b075ad", "#7ca5cc"]);
+				.range(["#aec7e8", "#1f77b4"]);
 
 //Create x axis 
 var xAxis = d3.svg.axis()
@@ -39,52 +39,51 @@ var svg = d3.select('body')
 svg.append('g');
 
 //Read data in 
-dataset = [{"AgeGrp":"10 to 14","Year":"1999","Female":0.5,"Male":1.9},
-		{"AgeGrp":"15 to 24","Year":"1999","Female":3,"Male":16.8},
-		{"AgeGrp":"25 to 44","Year":"1999","Female":5.5,"Male":21.6},
-		{"AgeGrp":"45 to 64","Year":"1999","Female":6,"Male":20.8},
-		{"AgeGrp":"65 to 74","Year":"1999","Female":4.1,"Male":24.7},
-		{"AgeGrp":"75 and over","Year":"1999","Female":4.5,"Male":42.4},
-		{"AgeGrp":"10 to 14","Year":"2014","Female":1.5,"Male":2.6},
-		{"AgeGrp":"15 to 24","Year":"2014","Female":4.6,"Male":18.2},
-		{"AgeGrp":"25 to 44","Year":"2014","Female":7.2,"Male":24.3},
-		{"AgeGrp":"45 to 64","Year":"2014","Female":9.8,"Male":29.7},
-		{"AgeGrp":"65 to 74","Year":"2014","Female":5.9,"Male":26.6},
-		{"AgeGrp":"75 and over","Year":"2014","Female":4,"Male":38.8}];
+dataset = [{"Gender":"Male","AgeGrp":"10–14","1999":1.9,"2014":2.6},
+			{"Gender":"Male","AgeGrp":"15–24","1999":16.8,"2014":18.2},
+			{"Gender":"Male","AgeGrp":"25–44","1999":21.6,"2014":24.3},
+			{"Gender":"Male","AgeGrp":"45–64","1999":20.8,"2014":29.7},
+			{"Gender":"Male","AgeGrp":"65–74","1999":24.7,"2014":26.6},
+			{"Gender":"Male","AgeGrp":"75 and over","1999":42.4,"2014":38.8},
+			{"Gender":"Female","AgeGrp":"10–14","1999":0.5,"2014":1.5},
+			{"Gender":"Female","AgeGrp":"15–24","1999":3,"2014":4.6},
+			{"Gender":"Female","AgeGrp":"25–44","1999":5.5,"2014":7.2},
+			{"Gender":"Female","AgeGrp":"45–64","1999":6,"2014":9.8},
+			{"Gender":"Female","AgeGrp":"65–74","1999":4.1,"2014":5.9},
+			{"Gender":"Female","AgeGrp":"75 and over","1999":4.5,"2014":4}];
 
 var agesDups = dataset.map(function(d) {
 				return d.AgeGrp;});
 var ages = agesDups.filter(function(elem, pos) {
 				return agesDups.indexOf(elem) == pos;});
 
-var genders = d3.keys(dataset[0]).filter(function(key) {
-				return key !== "Year" & key !== "AgeGrp";});
+var years = d3.keys(dataset[0]).filter(function(key) {
+				return key !== "Gender" & key !== "AgeGrp";});
 
 dataset.forEach(function(d) {
-	d.gendat = genders.map(function(series) {
-		return { gender: series, value: +d[series] };
+	d.yrdat = years.map(function(series) {
+		return { year: series, value: +d[series] };
 	});
 });
 
 dataset.forEach(function(d) {
-	d.gendat_labs = genders.map(function(series) {
-		return { gender: series, value: d3.format('.1f')(+d[series])};
+	d.yrdat_labs = years.map(function(series) {
+		return { year: series, value: d3.format('.1f')(+d[series]) };
 	});
 });
-
 
 var dat = dataset.filter(function(d) {
-	return d.Year == "1999"; 
+	return d.Gender == "Male"; 
 });
 
 //Finish defining scales
 xScale.domain(ages);
 
-bScale.domain(genders)
+bScale.domain(years)
 	.rangeRoundBands([0, xScale.rangeBand()]);
 
 yScale.domain([0, d3.max(dat, function(d) {
-	return d3.max(d.gendat, function(d) {
+	return d3.max(d.yrdat, function(d) {
 		return d.value;});})]);
 
 	//Create bars
@@ -97,22 +96,22 @@ yScale.domain([0, d3.max(dat, function(d) {
 						return 'translate(' + xScale(d.AgeGrp) + ', 0)'; });
 	data_use.selectAll('rect')
 		.data(function(d) {
-			return d.gendat;
+			return d.yrdat;
 		})
 		.enter()
 		.append('rect')
 		.attr('width', bScale.rangeBand())
-		.attr('x', function(d) { return bScale(d.gender) })
+		.attr('x', function(d) { return bScale(d.year) })
 		.attr('y', function(d) { return yScale(d.value) })
 		.attr('height', function(d) { return h - yScale(d.value); })	
 		//Still ahve to add padding to left and bottom for placement
 		.attr('transform', 'translate(' + m.left + ', ' + m.bottom + ')')
-		.style('fill', function(d) { return color(d.gender) });
+		.style('fill', function(d) { return color(d.year) });
 
 	//Add data labels
 	var lbl = data_use.selectAll('text')
 		.data(function(d) {
-			return d.gendat_labs;
+			return d.yrdat_labs;
 		})
 		.enter()
 		.append('text')
@@ -120,7 +119,7 @@ yScale.domain([0, d3.max(dat, function(d) {
 		return d.value;
 	})
 	.attr('text-anchor', 'middle')
-	.attr('x', function(d) { return bScale(d.gender) + 20 })
+	.attr('x', function(d) { return bScale(d.year) + 20 })
 	.attr('y', function(d) { return yScale(d.value) - 5 })
 	.attr('transform', 'translate(' + m.left + ',' + m.bottom + ')');
 
@@ -147,11 +146,11 @@ yScale.domain([0, d3.max(dat, function(d) {
 		.attr('class', 'title')
 		.attr('text-anchor', 'middle')
 		.attr('transform', 'translate(' + (w + m.left + m.right)/2 + ', ' + (m.top/3) + ')')
-		.text('Suicide rates in 1999 by gender: United States');
+		.text('Suicide rates for males by age: United States, 1999 and 2014');
 
 	//Add legend
 	var legend = svg.selectAll('.legend')
-		.data(genders.slice())
+		.data(years.slice())
 		.enter()
 		.append('g')
 		.attr('class', 'legend')
@@ -165,16 +164,16 @@ yScale.domain([0, d3.max(dat, function(d) {
 		.attr('height', 15)
 		.style('fill', color);
 	legend.append('text')
-		.attr('x', m.left + 35)
+		.attr('x', m.left + 60)
 		.attr('y', m.top + 23)
-		.style('text-anchor', 'left')
+		.style('text-anchor', 'end')
 		.text(function(d) { return d; });
 
 
 var updateData = function(sel) {
-	var new_year = sel.value;
+	var new_gender = sel.value;
 	var dat = dataset.filter(function(d) {
-		return d.Year == new_year; 
+		return d.Gender == new_gender; 
 	});
 
 	// yScale.domain([0, d3.max(dat, function(d) {
@@ -186,7 +185,7 @@ var updateData = function(sel) {
 		.data(dat)
 		.selectAll('rect')
 		.data(function(d) {
-			return d.gendat;
+			return d.yrdat;
 		})
 		.transition()
 		.ease('linear')
@@ -199,7 +198,7 @@ var updateData = function(sel) {
 		.data(dat)
 		.selectAll('text')
 		.data(function(d) {
-			return d.gendat_labs;
+			return d.yrdat_labs;
 		})
 		.transition()
 		.ease('linear')
@@ -218,8 +217,13 @@ var updateData = function(sel) {
 	//Add title
 	svg.select('.title')
 		.transition()
-		.text('Suicide rates for ' + new_year + ' by gender: United States');
+		.text('Suicide rates for ' + new_gender.toLowerCase() + 's' + ' by age: United States, 1999 and 2014');
+
 };
+
+
+
+
 
 
 

@@ -218,7 +218,7 @@ var updateData = function(sel) {
 	//Add title
 	svg.select('.title')
 		.transition()
-		.text('Suicide rates for ' + new_year + ' by gender: United States');
+		.text('Suicide rates in ' + new_year + ' by gender: United States');
 };
 
 

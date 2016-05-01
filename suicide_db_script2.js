@@ -226,6 +226,13 @@ legend.append('text')
 	.style('text-anchor', 'left')
 	.text(function(d) { return d; });
 
+d3.select('body')
+	.append('div')
+	.attr('class', 'footer');
+d3.select('.footer')
+	.append('p')
+	.attr('id', 'footnote')
+	.html("<strong>NOTES:</strong> For all age groups, the difference in rates between 1999 and 2014 is significant at the 0.05 level. Suicides are identified with codes U03, X60-X84, and Y87.0 from the <em>International Statistical Classification of Diseases and Related Health Problems, Tenth Revision</em>. Access data for Figure 2 at: <a href='http://www.cdc.gov/nchs/data/databriefs/db241_table.pdf#2'>http://www.cdc.gov/nchs/data/databriefs/db241_table.pdf#2</a>. <br/><strong>SOURCE: </strong>NCHS, National Vital Statistics System, Mortality.");
 
 var updateData = function(sel) {
 	

@@ -49,10 +49,18 @@ text {
 	font-weight: 700;
 }
 
+.btns {
+	width: 800px;
+}
+
 input[type=button] {
 	font-weight: 700;
 	padding: 6px;
 	border: 3px solid #000000;
 	border-radius: 5px;
 	background-color: #ffffff;
+}
+
+#cg_select {
+	float: right;
 }
